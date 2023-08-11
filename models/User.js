@@ -41,4 +41,9 @@ UserShema.methods.createJwt = function () {
   );
 };
 
+UserShema.methods.comparePassword = async function (candidatePassword) {
+  const isMatch = await bycrypt.compare(candidatePassword, this.password);
+  return isMatch;
+};
+
 module.exports = mongoose.model("User", UserShema);

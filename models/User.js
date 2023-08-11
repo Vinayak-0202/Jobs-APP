@@ -1,4 +1,6 @@
 const mongoose = require("mongoose");
+const bycrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
 const UserShema = new mongoose.Schema({
   name: {
@@ -24,5 +26,19 @@ const UserShema = new mongoose.Schema({
     minlength: 2,
   },
 });
+
+UserShema.pre("save", async function (next) {
+  const salt = await bycrypt.genSalt(10); //genrate random bytes by running method genSalt
+  this.password = await bycrypt.hash(this.password, salt);
+  next();
+});
+
+UserShema.methods.createJwt = function () {
+  return jwt.sign(
+    { userId: this._id, name: this.name },
+    process.env.JWT_SECRET,
+    { expiresIn: process.env.JWT_LIFETIME }
+  );
+};
 
 module.exports = mongoose.model("User", UserShema);

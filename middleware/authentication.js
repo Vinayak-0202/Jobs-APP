@@ -11,9 +11,11 @@ const auth = async (req, res, next) => {
   const token = authHeader.split(" ")[1];
   try {
     const payLoad = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = { userID: payLoad.userID, name: payLoad.name };
+    req.user = { userId: payLoad.userId, name: payLoad.name };
     next();
   } catch (err) {
     throw new UnauthenticatedError("Authentication Invalid");
   }
 };
+
+module.exports = auth;

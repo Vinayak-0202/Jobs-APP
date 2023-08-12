@@ -1,6 +1,7 @@
 require("dotenv").config();
 require("express-async-errors");
 const express = require("express");
+const authenticateUser = require("./middleware/authentication");
 const app = express();
 
 //connectDB
@@ -19,7 +20,7 @@ app.use(express.json());
 
 // routes
 app.use("/api/v1/auth/", authRouter);
-app.use("/api/v1/jobs/", jobRouter);
+app.use("/api/v1/jobs/", authenticateUser, jobRouter);
 
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
@@ -38,3 +39,6 @@ const start = async () => {
 };
 
 start();
+
+//netstat -ano | findstr :5000
+//taskkill /F /PID 15164
